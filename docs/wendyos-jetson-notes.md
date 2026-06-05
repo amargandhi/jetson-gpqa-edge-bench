@@ -103,6 +103,12 @@ The first official GPQA-Diamond prompt needed 279 prompt tokens through the Open
 
 the same benchmark prompt was accepted, and llama.cpp reported `new slot, n_ctx = 512`.
 
+One later n20 subset item still failed through the chat path at `n_ctx = 512`:
+
+```text
+request (666 tokens) exceeds the available context size (512)
+```
+
 Potential product improvement: expose context size as a normal app setting and avoid shipping large LLM server profiles with a default context below common benchmark prompt lengths.
 
 ### Host Hook Quoting Was Fragile
@@ -120,4 +126,3 @@ With InstinctRazor at `n_ctx = 512` on this 8 GB Jetson:
 - individual GPQA items took several minutes each.
 
 That makes this setup useful as a "can a 122B MoE run at all on a tiny edge device?" demo, but not a fast interactive research assistant without further optimization.
-

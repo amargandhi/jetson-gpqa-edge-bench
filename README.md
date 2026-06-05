@@ -32,9 +32,23 @@ runs/private/
 - GPQA official dataset: https://huggingface.co/datasets/Idavidrein/gpqa
 - GPQA paper: https://arxiv.org/abs/2311.12022
 - Qwen3.5-122B-A10B model card: https://huggingface.co/Qwen/Qwen3.5-122B-A10B
+- General Instinct blog post: https://general-instinct.com/blog/frontier-moe-sub-4-bit
 - InstinctRazor GGUF: https://huggingface.co/General-Instinct/InstinctRazor-Qwen3.5-122B-A10B-GGUF
-- Gemma 4 12B model card: https://huggingface.co/google/gemma-4-12B
+- Gemma 4 12B IT model card: https://huggingface.co/google/gemma-4-12B-it
 - Unsloth Gemma 4 12B GGUF: https://huggingface.co/unsloth/gemma-4-12b-it-GGUF
+
+## Current Public Result
+
+See [`results/gpqa-edge-report-20260605.md`](results/gpqa-edge-report-20260605.md).
+
+Same official GPQA-Diamond deterministic shuffled subset, `n=20`, seed `20260605`:
+
+| Model | Correct | Accuracy | Failures | Avg sec/item | Wall time | Avg generated tok/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Gemma 4 12B IT Q3 | 7/20 | 35.0% | 0 | 2.644 | 52.884 s | 10.6824 |
+| InstinctRazor Qwen3.5 122B-A10B IQ3_XXS | 8/20 | 40.0% | 1 | 392.799 | 6605.726 s | 0.2144 |
+
+The InstinctRazor result required increasing the Jetson server context from `256` to `512`. One prompt still exceeded that context (`666` tokens through the chat path), so the public aggregate includes one API failure.
 
 ## Reported Reference Points
 
@@ -124,12 +138,13 @@ python3 scripts/run_gpqa.py \
   --csv data/private/gpqa_diamond.csv \
   --base-url http://192.168.0.109:8080/v1 \
   --model InstinctRazor-Qwen3.5-122B-A10B-IQ3_XXS.gguf \
-  --model-label instinctrazor-122b-iq3xxs-jetson \
+  --model-label instinctrazor-122b-iq3xxs-jetson-ctx512 \
   --limit 20 \
   --seed 20260605 \
   --shuffle-rows \
-  --timeout 900 \
-  --out runs/private/gpqa-instinctrazor-n20
+  --max-tokens 8 \
+  --timeout 1800 \
+  --out runs/private/gpqa-instinctrazor-n20-ctx512
 ```
 
 The IP avoids a macOS/Bash `.local` resolver issue seen during Codex runs. If your shell resolves the WendyOS name normally, `http://wendyos-fearless-valley.local:8080/v1` is also fine.

@@ -69,6 +69,16 @@ n=100
 n=198
 ```
 
+## Context-Size Note
+
+On the 2026-06-05 Jetson/WendyOS run, InstinctRazor initially served with `n_ctx = 256`. That rejected the first official GPQA-Diamond prompt through this OpenAI chat path. After patching the server to `n_ctx = 512`, the n20 run completed with one remaining context failure:
+
+```text
+request (666 tokens) exceeds the available context size (512)
+```
+
+Future runs should use a larger context if the device can tolerate it, or report context failures as part of the edge-runtime result.
+
 ## How To Compare To Published Results
 
 Do not claim equivalence unless the setup matches the original evaluation harness.
