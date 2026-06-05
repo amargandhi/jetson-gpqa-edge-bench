@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.4,
+  "attempted": 20,
+  "avg_elapsed_sec_per_item": 392.799,
+  "avg_predicted_tokens_per_second": 0.2144,
+  "correct": 8,
+  "ended_utc": "2026-06-05T12:26:56Z",
+  "failed": 1,
+  "limit": 20,
+  "model_label": "instinctrazor-122b-iq3xxs-jetson-ctx512",
+  "privacy_note": "No GPQA questions, choices, answer text, or answer keys are included in this summary.",
+  "seed": 20260605,
+  "started_utc": "2026-06-05T10:36:50Z",
+  "wall_time_sec": 6605.726
+}
