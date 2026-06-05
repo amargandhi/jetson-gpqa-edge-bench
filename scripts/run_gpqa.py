@@ -39,6 +39,25 @@ def hashed_id(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()[:16]
 
 
+def load_existing_results(path: Path) -> dict[tuple[int, str], dict[str, object]]:
+    existing: dict[tuple[int, str], dict[str, object]] = {}
+    if not path.exists():
+        return existing
+
+    with path.open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            if not line.strip():
+                continue
+            try:
+                result = json.loads(line)
+                position = int(result["position"])
+                record_hash = str(result["record_hash"])
+            except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+                raise SystemExit(f"cannot resume from malformed line {line_number} in {path}: {exc}") from exc
+            existing[(position, record_hash)] = result
+    return existing
+
+
 def build_item(row: dict[str, str], index: int, seed: int) -> dict[str, object]:
     record_id = pick(row, "Record ID", "record_id", "id", default=f"row-{index}")
     question = pick(row, "Question", "question")
@@ -183,6 +202,7 @@ def main() -> int:
     parser.add_argument("--timeout", type=float, default=300)
     parser.add_argument("--max-tokens", type=int, default=8)
     parser.add_argument("--sleep", type=float, default=0)
+    parser.add_argument("--resume", action="store_true", help="Append to an existing run and skip matching rows")
     args = parser.parse_args()
 
     csv_path = Path(args.csv)
@@ -196,10 +216,12 @@ def main() -> int:
     selected = indexed_rows[: args.limit] if args.limit else indexed_rows
 
     private_results_path = out_dir / "private_results.jsonl"
+    existing_results = load_existing_results(private_results_path) if args.resume else {}
     results: list[dict[str, object]] = []
     started = time.time()
 
-    with private_results_path.open("w", encoding="utf-8") as handle:
+    write_mode = "a" if args.resume and private_results_path.exists() else "w"
+    with private_results_path.open(write_mode, encoding="utf-8") as handle:
         for position, (source_index, row) in enumerate(selected):
             item = build_item(row, index=source_index, seed=args.seed)
             result: dict[str, object] = {
@@ -208,6 +230,20 @@ def main() -> int:
                 "record_hash": item["record_hash"],
                 "domain": item["domain"],
             }
+            existing = existing_results.get((position, str(item["record_hash"])))
+            if existing is not None:
+                results.append(existing)
+                print(
+                    f"{len(results)}/{len(selected)} "
+                    f"hash={existing['record_hash']} "
+                    f"pred={existing.get('predicted_letter', '?')} "
+                    f"ok={existing.get('is_correct', False)} "
+                    f"sec={existing.get('elapsed_sec')} "
+                    "resume=True",
+                    flush=True,
+                )
+                continue
+
             t0 = time.time()
             try:
                 response = post_chat(
