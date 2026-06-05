@@ -1,0 +1,3 @@
+Record ID,High-level domain,Subdomain,Question,Correct Answer,Incorrect Answer 1,Incorrect Answer 2,Incorrect Answer 3
+toy-001,physics,mechanics,This is a toy fixture and not GPQA. Which quantity is measured in newtons?,Force,Energy,Power,Temperature
+toy-002,chemistry,atoms,This is a toy fixture and not GPQA. Which particle has a negative electric charge?,Electron,Proton,Neutron,Photon
