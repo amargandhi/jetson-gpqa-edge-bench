@@ -41,11 +41,13 @@ Public summaries contain only aggregate statistics.
 
 Each item is converted into a shuffled A/B/C/D multiple-choice prompt.
 
-The shuffle is deterministic using:
+Choice shuffling is deterministic using:
 
 - the user-provided seed,
 - the record ID when present,
 - otherwise the row index.
+
+Subset selection should use `--shuffle-rows` so the first public demo is a deterministic shuffled subset rather than the first rows in the CSV.
 
 The model is instructed to answer with one letter only.
 

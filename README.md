@@ -113,6 +113,7 @@ python3 scripts/run_gpqa.py \
   --model-label gemma4-12b-q3-jetson \
   --limit 20 \
   --seed 20260605 \
+  --shuffle-rows \
   --out runs/private/gpqa-gemma4-n20
 ```
 
@@ -126,6 +127,7 @@ python3 scripts/run_gpqa.py \
   --model-label instinctrazor-122b-iq3xxs-jetson \
   --limit 20 \
   --seed 20260605 \
+  --shuffle-rows \
   --timeout 900 \
   --out runs/private/gpqa-instinctrazor-n20
 ```

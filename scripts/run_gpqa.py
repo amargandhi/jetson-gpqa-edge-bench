@@ -179,6 +179,7 @@ def main() -> int:
     parser.add_argument("--out", required=True)
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--seed", type=int, default=20260605)
+    parser.add_argument("--shuffle-rows", action="store_true")
     parser.add_argument("--timeout", type=float, default=300)
     parser.add_argument("--max-tokens", type=int, default=8)
     parser.add_argument("--sleep", type=float, default=0)
@@ -189,17 +190,21 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     rows = read_rows(csv_path)
-    selected = rows[: args.limit] if args.limit else rows
+    indexed_rows = list(enumerate(rows))
+    if args.shuffle_rows:
+        random.Random(args.seed).shuffle(indexed_rows)
+    selected = indexed_rows[: args.limit] if args.limit else indexed_rows
 
     private_results_path = out_dir / "private_results.jsonl"
     results: list[dict[str, object]] = []
     started = time.time()
 
     with private_results_path.open("w", encoding="utf-8") as handle:
-        for index, row in enumerate(selected):
-            item = build_item(row, index=index, seed=args.seed)
+        for position, (source_index, row) in enumerate(selected):
+            item = build_item(row, index=source_index, seed=args.seed)
             result: dict[str, object] = {
                 "index": item["index"],
+                "position": position,
                 "record_hash": item["record_hash"],
                 "domain": item["domain"],
             }
