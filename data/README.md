@@ -10,4 +10,11 @@ After accepting access on Hugging Face, place the official Diamond CSV here:
 data/private/gpqa_diamond.csv
 ```
 
+Download helper:
+
+```bash
+export HUGGINGFACE_TOKEN=hf_...
+python3 scripts/download_gpqa.py
+```
+
 This directory is intentionally kept public-data-free.

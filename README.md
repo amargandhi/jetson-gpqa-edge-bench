@@ -53,6 +53,19 @@ Accept GPQA access on Hugging Face, then place the official Diamond CSV here:
 data/private/gpqa_diamond.csv
 ```
 
+You can download it with:
+
+```bash
+export HUGGINGFACE_TOKEN=hf_...
+python3 scripts/download_gpqa.py
+```
+
+or put the token in:
+
+```text
+~/.cache/huggingface/token
+```
+
 The expected columns are the official GPQA CSV-style columns:
 
 ```text
