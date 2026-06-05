@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+
+# Official GPQA is gated and asks users not to reveal examples.
+data/private/
+runs/private/
+
+# Local scratch output.
+*.tmp
+*.log
