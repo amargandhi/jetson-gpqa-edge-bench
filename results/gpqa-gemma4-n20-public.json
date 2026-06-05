@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.35,
+  "attempted": 20,
+  "avg_elapsed_sec_per_item": 2.644,
+  "avg_predicted_tokens_per_second": 10.6824,
+  "correct": 7,
+  "ended_utc": "2026-06-05T09:49:12Z",
+  "failed": 0,
+  "limit": 20,
+  "model_label": "gemma4-12b-q3-jetson",
+  "privacy_note": "No GPQA questions, choices, answer text, or answer keys are included in this summary.",
+  "seed": 20260605,
+  "started_utc": "2026-06-05T09:48:19Z",
+  "wall_time_sec": 52.884
+}
